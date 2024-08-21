@@ -110,7 +110,7 @@ function IndexPopup() {
                       </div>
                   </pre>
         </div>)}
-        <div>
+        <div style={{ display: 'flex', justifyContent: 'center' , marginTop: '20px'}}>
             <button onClick={fetchData} style={{
                 backgroundColor: '#4CAF50',
                 color: '#fff',
