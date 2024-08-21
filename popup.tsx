@@ -58,8 +58,6 @@ function IndexPopup() {
         fetchDayStatsData();
     }
 
-    // fetchData();
-
     return (<div
         style={{
             width: 300, padding: 16
@@ -107,7 +105,17 @@ function IndexPopup() {
                   </pre>
         </div>)}
         <div>
-            <button onClick={fetchData}>Update stats</button>
+            <button onClick={fetchData} style={{
+                backgroundColor: '#4CAF50',
+                color: '#fff',
+                padding: '10px 20px',
+                height: '40px',
+                border: 'none',
+                borderRadius: '20px',
+                fontSize: 16,
+                cursor: 'pointer',
+                transition: 'background-color 0.3s ease',
+            }}>Update stats</button>
         </div>
     </div>)
 }
