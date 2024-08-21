@@ -1,85 +1,56 @@
-import {useState} from "react"
+import {useStorage} from "@plasmohq/storage/hook"
+import {createUseStyles} from 'react-jss';
 
 
-function IndexPopup() {
-    const [statistics, setStatistics] = useState<any>(null);
-    const [engagements, setEngagements] = useState<any>(null);
+function OptionsIndex() {
+    const [token, setToken] = useStorage<string>("token", "")
+    const [project, setProject] = useStorage<string>("project", "")
 
-    const statisticsUrl = "https://tracker-api.toptal.com/projects/616142/statistics";
-    const engagementsUrl = "https://tracker-api.toptal.com/projects/616142/engagements";
-    const token = process.env.PLASMO_PUBLIC_TOPTAL_TOKEN;
+    const useStyles = createUseStyles({
+        container: {
+            maxWidth: 600,
+            margin: '0 auto',
+            padding: 40,
+            backgroundColor: '#fff',
+            boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
+            borderRadius: 4,
+        }, heading: {
+            textAlign: 'center', color: '#333', marginBottom: 30,
+        }, formGroup: {
+            marginBottom: 20,
+        }, label: {
+            fontWeight: 'bold', color: '#555', marginBottom: 5, marginTop: 50
+        }, input: {
+            padding: 10, border: '1px solid #ccc', borderRadius: 4, fontSize: 16, width: '100%',
+        }, button: {
+            backgroundColor: '#007bff',
+            color: '#fff',
+            padding: '10px 20px',
+            border: 'none',
+            borderRadius: 4,
+            fontSize: 16,
+            cursor: 'pointer',
+            transition: 'background-color 0.3s ease',
+            '&:hover': {
+                backgroundColor: '#0056b3',
+            },
+        },
+    });
 
-    const fetchData = () => {
+    const classes = useStyles();
 
-        const fetchStatisticsData = async () => {
-            try {
-                const response = await fetch(statisticsUrl + "?access_token=" + token);
-                const data = await response.json();
-                setStatistics(data);
-                // console.log('Statistics:', data);
-            } catch (error) {
-                console.error('Statistics Error:', error);
-            }
-        };
-
-        const fetchEngagementsData = async () => {
-            try {
-                const response = await fetch(engagementsUrl + "?access_token=" + token);
-                const data = await response.json();
-                setEngagements(data);
-            } catch (error) {
-                console.error('Engagements Error:', error);
-            }
-        };
-        fetchStatisticsData();
-        fetchEngagementsData();
-    }
-
-    fetchData();
-
-    return (<div
-        style={{
-            width: 300,
-            padding: 16
-        }}>
-        <h2>
-            TopTracker Stats
-        </h2>
-        {statistics && engagements && (<div>
-                  <pre>
-                      <p>Outstanding balance: ${(statistics.outstanding_amount).toFixed(2)}</p>
-                      {/*<p>Amount this week: ${(50000).toFixed(2)}</p>*/}
-                      <p>Percent of DAY: </p>
-                      <div
-                          style={{
-                              width: `${(engagements.statistics[0].worked_last_24_hours / 3600 / 8 * 100).toFixed(2)}%`,
-                              height: '100%',
-                              backgroundColor: '#4CAF50',
-                              borderRadius: '10px',
-                              textAlign: 'center',
-                              lineHeight: '20px',
-                              color: 'white',
-                          }}
-                      >
-                        {(engagements.statistics[0].worked_last_24_hours / 3600 / 8 * 100).toFixed(2)}%
-                      </div>
-                      <p>Percent of WEEK: </p>
-                      <div
-                          style={{
-                              width: `${(statistics.outstanding_amount / (engagements.workers[0].rate * 40) * 100).toFixed(2)}%`,
-                              height: '100%',
-                              backgroundColor: '#4CAF50',
-                              borderRadius: '10px',
-                              textAlign: 'center',
-                              lineHeight: '20px',
-                              color: 'white',
-                          }}
-                      >
-                        {(statistics.outstanding_amount / (engagements.workers[0].rate * 40) * 100).toFixed(2)}%
-                      </div>
-                  </pre>
-        </div>)}
+    return (<div className={classes.container}>
+        <h1 className={classes.heading}>TopTracker Stats Settings</h1>
+        <div className={classes.formGroup}>
+            <label htmlFor="input-token" className={classes.label}>Token: </label>
+            <input className={classes.input} id="input-token" onChange={(e) => setToken(e.target.value)}
+                   value={token}/>
+            <p></p>
+            <label htmlFor="input-project" className={classes.label}>Project: </label>
+            <input className={classes.input} id="input-project" onChange={(e) => setProject(e.target.value)}
+                   value={project}/>
+        </div>
     </div>)
 }
 
-export default IndexPopup
+export default OptionsIndex
