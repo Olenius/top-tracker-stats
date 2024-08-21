@@ -1,6 +1,7 @@
 import {useState} from "react"
 import {useStorage} from "@plasmohq/storage/hook"
 
+let interval = null;
 
 function IndexPopup() {
     const [statistics, setStatistics] = useState<any>(null);
@@ -16,7 +17,8 @@ function IndexPopup() {
     const [worker] = useStorage<string>("worker")
 
     const fetchData = () => {
-        if (!token || !project) return;
+        if (!token || !project || !worker) return;
+
         const fetchStatisticsData = async () => {
             try {
                 const url = statisticsUrl.replace("{projectId}", project) + "?access_token=" + token
@@ -40,7 +42,6 @@ function IndexPopup() {
         };
 
         const fetchDayStatsData = async () => {
-            if (!worker) return;
             let date = new Date().toJSON().slice(0, 10);
 
             try {
@@ -58,6 +59,11 @@ function IndexPopup() {
         fetchDayStatsData();
     }
 
+    if (!interval && token && project && worker) {
+        fetchData();
+        interval = setInterval(fetchData, 180000);
+    }
+
     return (<div
         style={{
             width: 300, padding: 16
@@ -68,7 +74,7 @@ function IndexPopup() {
         {(!token || !project || !worker) && (<div> Please congifure options</div>)}
 
         {(!statistics || typeof statistics.error !== 'undefined' || !dayStats || typeof dayStats.error !== 'undefined' || !engagements || typeof engagements.error !== 'undefined') && (
-            <div>Can't fetch data</div>)}
+            <div>No data fetched</div>)}
 
         {statistics && !statistics.error && dayStats && !dayStats.error && engagements && !engagements.error && (<div>
                   <pre>
@@ -115,7 +121,8 @@ function IndexPopup() {
                 fontSize: 16,
                 cursor: 'pointer',
                 transition: 'background-color 0.3s ease',
-            }}>Update stats</button>
+            }}>Update stats
+            </button>
         </div>
     </div>)
 }
