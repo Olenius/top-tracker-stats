@@ -5,6 +5,7 @@ import {createUseStyles} from 'react-jss';
 function OptionsIndex() {
     const [token, setToken] = useStorage<string>("token", "")
     const [project, setProject] = useStorage<string>("project", "")
+    const [worker, setWorker] = useStorage<string>("worker", "")
 
     const useStyles = createUseStyles({
         container: {
@@ -46,9 +47,13 @@ function OptionsIndex() {
             <input className={classes.input} id="input-token" onChange={(e) => setToken(e.target.value)}
                    value={token}/>
             <p></p>
-            <label htmlFor="input-project" className={classes.label}>Project: </label>
+            <label htmlFor="input-project" className={classes.label}>Project Id: </label>
             <input className={classes.input} id="input-project" onChange={(e) => setProject(e.target.value)}
                    value={project}/>
+            <p></p>
+            <label htmlFor="input-worker" className={classes.label}>Worker Id: </label>
+            <input className={classes.input} id="input-worker" onChange={(e) => setWorker(e.target.value)}
+                   value={worker}/>
         </div>
     </div>)
 }

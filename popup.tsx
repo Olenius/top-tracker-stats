@@ -4,18 +4,20 @@ import {useStorage} from "@plasmohq/storage/hook"
 
 function IndexPopup() {
     const [statistics, setStatistics] = useState<any>(null);
+    const [dayStats, setDayStats] = useState<any>(null);
     const [engagements, setEngagements] = useState<any>(null);
 
     const statisticsUrl = "https://tracker-api.toptal.com/projects/{projectId}/statistics";
     const engagementsUrl = "https://tracker-api.toptal.com/projects/{projectId}/engagements";
+    const dayStatsUrl = "https://tracker-api.toptal.com/reports/chart";
 
     const [token] = useStorage<string>("token")
     const [project] = useStorage<string>("project")
+    const [worker] = useStorage<string>("worker")
 
     const fetchData = () => {
-
+        if (!token || !project) return;
         const fetchStatisticsData = async () => {
-            if (!token || !project) return;
             try {
                 const url = statisticsUrl.replace("{projectId}", project) + "?access_token=" + token
                 const response = await fetch(url);
@@ -27,7 +29,6 @@ function IndexPopup() {
         };
 
         const fetchEngagementsData = async () => {
-            if (!token) return;
             try {
                 const url = engagementsUrl.replace("{projectId}", project) + "?access_token=" + token
                 const response = await fetch(url);
@@ -37,13 +38,27 @@ function IndexPopup() {
                 console.error('Engagements Error:', error);
             }
         };
+
+        const fetchDayStatsData = async () => {
+            if (!worker) return;
+            let date = new Date().toJSON().slice(0, 10);
+
+            try {
+                const url = dayStatsUrl + "?access_token=" + token + "&project_ids[]=" + project + "&worker_ids[]=" + worker + "&start_date=" + date + "&end_date=" + date
+                const response = await fetch(url);
+                const data = await response.json();
+                setDayStats(data);
+            } catch (error) {
+                console.error('Statistics Error:', error);
+            }
+        };
+
         fetchStatisticsData();
         fetchEngagementsData();
+        fetchDayStatsData();
     }
 
-    fetchData();
-    console.log(statistics);
-    console.log(engagements);
+    // fetchData();
 
     return (<div
         style={{
@@ -52,17 +67,19 @@ function IndexPopup() {
         <h2>
             TopTracker Stats
         </h2>
-        {(!token || !project || !statistics || typeof statistics.error !== 'undefined' || !engagements || typeof engagements.error !== 'undefined') && (
-            <div>ERROR</div>)}
+        {(!token || !project || !worker) && (<div> Please congifure options</div>)}
 
-        {statistics && !statistics.error && engagements && !engagements.error && (<div>
+        {(!statistics || typeof statistics.error !== 'undefined' || !dayStats || typeof dayStats.error !== 'undefined' || !engagements || typeof engagements.error !== 'undefined') && (
+            <div>Can't fetch data</div>)}
+
+        {statistics && !statistics.error && dayStats && !dayStats.error && engagements && !engagements.error && (<div>
                   <pre>
                       <p>Outstanding balance: ${(statistics.outstanding_amount).toFixed(2)}</p>
                       {/*<p>Amount this week: ${(50000).toFixed(2)}</p>*/}
-                      <p>Percent of DAY: </p>
+                      <p>TODAY: ({formatSecondsToHoursAndMinutes(dayStats.reports.workers.data[0].dates[0].seconds)})</p>
                       <div
                           style={{
-                              width: `${(engagements.statistics[0].worked_last_24_hours / 3600 / 8 * 100).toFixed(2)}%`,
+                              width: `${(dayStats.reports.workers.data[0].dates[0].seconds / 3600 / 8 * 100).toFixed(2)}%`,
                               height: '100%',
                               backgroundColor: '#4CAF50',
                               borderRadius: '10px',
@@ -71,9 +88,9 @@ function IndexPopup() {
                               color: 'white',
                           }}
                       >
-                        {(engagements.statistics[0].worked_last_24_hours / 3600 / 8 * 100).toFixed(2)}%
+                        {(dayStats.reports.workers.data[0].dates[0].seconds / 3600 / 8 * 100).toFixed(2)}%
                       </div>
-                      <p>Percent of WEEK: </p>
+                      <p>WEEK: ({formatSecondsToHoursAndMinutes(statistics.outstanding_amount / (engagements.workers[0].rate) * 3600)})</p>
                       <div
                           style={{
                               width: `${(statistics.outstanding_amount / (engagements.workers[0].rate * 40) * 100).toFixed(2)}%`,
@@ -89,7 +106,20 @@ function IndexPopup() {
                       </div>
                   </pre>
         </div>)}
+        <div>
+            <button onClick={fetchData}>Update stats</button>
+        </div>
     </div>)
+}
+
+function formatSecondsToHoursAndMinutes(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+
+    const hoursString = hours.toString().padStart(2, '0');
+    const minutesString = minutes.toString().padStart(2, '0');
+
+    return `${hoursString}:${minutesString}`;
 }
 
 export default IndexPopup
