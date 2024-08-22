@@ -1,5 +1,6 @@
 import {useState} from "react"
 import {useStorage} from "@plasmohq/storage/hook"
+import './styles.css';
 
 let interval = null;
 
@@ -66,9 +67,9 @@ function IndexPopup() {
 
     return (<div
         style={{
-            width: 300, padding: 16
+            width: 300, paddingTop: 2, paddingLeft: 10, paddingRight: 10,
         }}>
-        <h2>
+        <h2 style={{textAlign: 'center'}}>
             TopTracker Stats
         </h2>
         {(!token || !project || !worker) && (<div> Please congifure options</div>)}
@@ -78,50 +79,35 @@ function IndexPopup() {
 
         {statistics && !statistics.error && dayStats && !dayStats.error && engagements && !engagements.error && (<div>
                   <pre>
-                      <p>Outstanding balance: ${(statistics.outstanding_amount).toFixed(2)}</p>
+                      <p><b>Outstanding balance: </b>$<span
+                          className={'hidden-text'}>{(statistics.outstanding_amount).toFixed(2)}</span></p>
                       {/*<p>Amount this week: ${(50000).toFixed(2)}</p>*/}
-                      <p>TODAY: ({formatSecondsToHoursAndMinutes(dayStats.reports.workers.data[0].dates[0].seconds)})</p>
-                      <div
-                          style={{
-                              width: `${(dayStats.reports.workers.data[0].dates[0].seconds / 3600 / 8 * 100).toFixed(2)}%`,
-                              height: '100%',
-                              backgroundColor: '#4CAF50',
-                              borderRadius: '10px',
-                              textAlign: 'center',
-                              lineHeight: '20px',
-                              color: 'white',
-                          }}
-                      >
-                        {(dayStats.reports.workers.data[0].dates[0].seconds / 3600 / 8 * 100).toFixed(2)}%
+                      <p><b>TODAY:</b> {formatSecondsToHoursAndMinutes(dayStats.reports.workers.data[0].dates[0].seconds)}</p>
+                      <div className={'progress'}>
+                          <div className={'bar'}
+                               style={{
+                                   left: `${(dayStats.reports.workers.data[0].dates[0].seconds / 3600 / 8 * 100 - 100).toFixed(2)}%`,
+                               }}>
+
+                          </div>
+                          <div
+                              className={'bar-label'}>{(dayStats.reports.workers.data[0].dates[0].seconds / 3600 / 8 * 100).toFixed(2)}%</div>
                       </div>
-                      <p>WEEK: ({formatSecondsToHoursAndMinutes(statistics.outstanding_amount / (engagements.workers[0].rate) * 3600)})</p>
-                      <div
-                          style={{
-                              width: `${(statistics.outstanding_amount / (engagements.workers[0].rate * 40) * 100).toFixed(2)}%`,
-                              height: '100%',
-                              backgroundColor: '#4CAF50',
-                              borderRadius: '10px',
-                              textAlign: 'center',
-                              lineHeight: '20px',
-                              color: 'white',
-                          }}
-                      >
-                        {(statistics.outstanding_amount / (engagements.workers[0].rate * 40) * 100).toFixed(2)}%
+
+                      <p><b>WEEK:</b> {formatSecondsToHoursAndMinutes(statistics.outstanding_amount / (engagements.workers[0].rate) * 3600)}</p>
+                      <div className={'progress'}>
+                          <div
+                              className={'bar'}
+                              style={{left: `${(statistics.outstanding_amount / (engagements.workers[0].rate * 40) * 100 - 100).toFixed(2)}%`,}}
+                          >
+                          </div>
+                          <div
+                              className={'bar-label'}>{(statistics.outstanding_amount / (engagements.workers[0].rate * 40) * 100).toFixed(2)}%</div>
                       </div>
                   </pre>
         </div>)}
-        <div style={{ display: 'flex', justifyContent: 'center' , marginTop: '20px'}}>
-            <button onClick={fetchData} style={{
-                backgroundColor: '#4CAF50',
-                color: '#fff',
-                padding: '10px 20px',
-                height: '40px',
-                border: 'none',
-                borderRadius: '20px',
-                fontSize: 16,
-                cursor: 'pointer',
-                transition: 'background-color 0.3s ease',
-            }}>Update stats
+        <div style={{display: 'flex', justifyContent: 'center', marginTop: '20px'}}>
+            <button onClick={fetchData}>Update stats
             </button>
         </div>
     </div>)

@@ -1,0 +1,60 @@
+body, button, input, textarea, select, h1, h2, h3, div, * {
+    font-family: 'Helvetica', Arial, sans-serif;
+}
+
+.progress {
+    width: 100%;
+    height: 1.5rem;
+    border-radius: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s;
+    will-change: transform;
+    background-color: #ababab;
+}
+
+.bar {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: #4CAF50;
+    top: 0;
+    bottom: 0;
+    border-radius: inherit;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.bar-label {
+    width: 100%;
+    position: absolute;
+    text-align: center;
+    top: 25%;
+    color: #fff;
+}
+
+button {
+    background-color: #4CAF50;
+    padding: 10px 20px;
+    height: 40px;
+    border: none;
+    border-radius: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    color: #fff;
+}
+
+button:hover {
+    background-color: #173a17;
+}
+
+.hidden-text {
+    background-color: #000
+}
+
+.hidden-text:hover {
+    background-color: #fff;
+}
