@@ -1,69 +1,41 @@
-import {useState} from "react"
+import {useState, useEffect} from "react"
 import {useStorage} from "@plasmohq/storage/hook"
 import './styles.css';
+import {DataFetcher} from "~dataFetcher"
+import {utils} from "~utils"
 
 let interval = null;
 
 function IndexPopup() {
-    const [statistics, setStatistics] = useState<any>(null);
-    const [dayStats, setDayStats] = useState<any>(null);
-    const [engagements, setEngagements] = useState<any>(null);
-
-    const statisticsUrl = "https://tracker-api.toptal.com/projects/{projectId}/statistics";
-    const engagementsUrl = "https://tracker-api.toptal.com/projects/{projectId}/engagements";
-    const dayStatsUrl = "https://tracker-api.toptal.com/reports/chart";
+    const [data, setData] = useState({
+        statistics: null,
+        engagements: null,
+        dayStats: null
+    })
 
     const [token] = useStorage<string>("token")
     const [project] = useStorage<string>("project")
     const [worker] = useStorage<string>("worker")
 
-    const fetchData = () => {
-        if (!token || !project || !worker) return;
+    const fetchData = async () => {
+        const statistics = await DataFetcher.fetchStatistics(token, project);
+        const engagements = await DataFetcher.fetchEngagements(token, project);
+        const dayStats = await DataFetcher.fetchDayStats(token, project, worker);
 
-        const fetchStatisticsData = async () => {
-            try {
-                const url = statisticsUrl.replace("{projectId}", project) + "?access_token=" + token
-                const response = await fetch(url);
-                const data = await response.json();
-                setStatistics(data);
-            } catch (error) {
-                console.error('Statistics Error:', error);
-            }
-        };
+        setData({
+            statistics,
+            engagements,
+            dayStats
+        });
+    };
 
-        const fetchEngagementsData = async () => {
-            try {
-                const url = engagementsUrl.replace("{projectId}", project) + "?access_token=" + token
-                const response = await fetch(url);
-                const data = await response.json();
-                setEngagements(data);
-            } catch (error) {
-                console.error('Engagements Error:', error);
-            }
-        };
-
-        const fetchDayStatsData = async () => {
-            let date = new Date().toJSON().slice(0, 10);
-
-            try {
-                const url = dayStatsUrl + "?access_token=" + token + "&project_ids[]=" + project + "&worker_ids[]=" + worker + "&start_date=" + date + "&end_date=" + date
-                const response = await fetch(url);
-                const data = await response.json();
-                setDayStats(data);
-            } catch (error) {
-                console.error('Statistics Error:', error);
-            }
-        };
-
-        fetchStatisticsData();
-        fetchEngagementsData();
-        fetchDayStatsData();
-    }
-
-    if (!interval && token && project && worker) {
+    useEffect(() => {
         fetchData();
-        interval = setInterval(fetchData, 180000);
-    }
+
+        if (!interval && token && project && worker) {
+            interval = setInterval(fetchData, 180000);
+        }
+    }, [token, project, worker]);
 
     return (<div
         style={{
@@ -74,53 +46,50 @@ function IndexPopup() {
         </h2>
         {(!token || !project || !worker) && (<div> Please congifure options</div>)}
 
-        {(!statistics || typeof statistics.error !== 'undefined' || !dayStats || typeof dayStats.error !== 'undefined' || !engagements || typeof engagements.error !== 'undefined') && (
+        {(typeof data === undefined || !data.statistics || typeof data.statistics.error !== 'undefined' || !data.dayStats || typeof data.dayStats.error !== 'undefined' || !data.engagements || typeof data.engagements.error !== 'undefined') && (
             <div>No data fetched</div>)}
 
-        {statistics && !statistics.error && dayStats && !dayStats.error && engagements && !engagements.error && (<div>
+        {data.statistics && !data.statistics.error && data.dayStats && !data.dayStats.error && data.engagements && !data.engagements.error && (
+            <div>
                   <pre>
                       <p><b>Outstanding balance: </b>$<span
-                          className={'hidden-text'}>{(statistics.outstanding_amount).toFixed(2)}</span></p>
+                          className={'hidden-text'}>{(data.statistics.outstanding_amount).toFixed(2)}</span></p>
                       {/*<p>Amount this week: ${(50000).toFixed(2)}</p>*/}
-                      <p><b>TODAY:</b> {formatSecondsToHoursAndMinutes(dayStats.reports.workers.data[0].dates[0].seconds)}</p>
+                      <p><b>TODAY:</b> {utils.formatSecondsToHoursAndMinutes(data.dayStats.reports.workers.data[0].dates[0].seconds)}</p>
                       <div className={'progress'}>
                           <div className={'bar'}
                                style={{
-                                   left: `${(dayStats.reports.workers.data[0].dates[0].seconds / 3600 / 8 * 100 - 100).toFixed(2)}%`,
+                                   left: `${(data.dayStats.reports.workers.data[0].dates[0].seconds / 3600 / 8 * 100 - 100).toFixed(2)}%`,
                                }}>
-
                           </div>
                           <div
-                              className={'bar-label'}>{(dayStats.reports.workers.data[0].dates[0].seconds / 3600 / 8 * 100).toFixed(2)}%</div>
+                              className={'bar-label'}>{(data.dayStats.reports.workers.data[0].dates[0].seconds / 3600 / 8 * 100).toFixed(2)}%</div>
                       </div>
 
-                      <p><b>WEEK:</b> {formatSecondsToHoursAndMinutes(statistics.outstanding_amount / (engagements.workers[0].rate) * 3600)}</p>
+                      <p><b>WEEK:</b> {utils.formatSecondsToHoursAndMinutes(data.statistics.outstanding_amount / (data.engagements.workers[0].rate) * 3600)}</p>
                       <div className={'progress'}>
                           <div
-                              className={'bar'}
-                              style={{left: `${(statistics.outstanding_amount / (engagements.workers[0].rate * 40) * 100 - 100).toFixed(2)}%`,}}
+                              className={'bar bar-red'}
+                              style={{
+                                  left: `${utils.getPercentOfWeekBar() - 100}%`,
+                              }}
                           >
                           </div>
                           <div
-                              className={'bar-label'}>{(statistics.outstanding_amount / (engagements.workers[0].rate * 40) * 100).toFixed(2)}%</div>
+                              className={'bar'}
+                              style={{left: `${(data.statistics.outstanding_amount / (data.engagements.workers[0].rate * 40) * 100 - 100).toFixed(2)}%`,}}
+                          >
+                          </div>
+                          <div
+                              className={'bar-label'}>{(data.statistics.outstanding_amount / (data.engagements.workers[0].rate * 40) * 100).toFixed(2)}%</div>
                       </div>
                   </pre>
-        </div>)}
+            </div>)}
         <div style={{display: 'flex', justifyContent: 'center', marginTop: '20px'}}>
             <button onClick={fetchData}>Update stats
             </button>
         </div>
     </div>)
-}
-
-function formatSecondsToHoursAndMinutes(seconds) {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-
-    const hoursString = hours.toString().padStart(2, '0');
-    const minutesString = minutes.toString().padStart(2, '0');
-
-    return `${hoursString}:${minutesString}`;
 }
 
 export default IndexPopup

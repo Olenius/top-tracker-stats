@@ -27,6 +27,10 @@ body, button, input, textarea, select, h1, h2, h3, div, * {
     color: white;
 }
 
+.bar-red {
+    background-color: #a89494;
+}
+
 .bar-label {
     width: 100%;
     position: absolute;
