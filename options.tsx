@@ -6,6 +6,10 @@ function OptionsIndex() {
     const [token, setToken] = useStorage<string>("token", "")
     const [project, setProject] = useStorage<string>("project", "")
     const [worker, setWorker] = useStorage<string>("worker", "")
+    const [startWorkHour, setStartWorkHour] = useStorage<number>("start_work_hour", 10)
+    const [endWorkHour, setEndWorkHour] = useStorage<number>("end_work_hour", 18)
+    const [hoursPerDay, setHoursPerDay] = useStorage<number>("hours_per_day", 8)
+    const [workDays, setWorkDays] = useStorage<number>("work_days", 5)
 
     const useStyles = createUseStyles({
         container: {
@@ -37,7 +41,6 @@ function OptionsIndex() {
             },
         },
     });
-
     const classes = useStyles();
 
     return (<div className={classes.container}>
@@ -54,6 +57,27 @@ function OptionsIndex() {
             <label htmlFor="input-worker" className={classes.label}>Worker Id: </label>
             <input className={classes.input} id="input-worker" onChange={(e) => setWorker(e.target.value)}
                    value={worker}/>
+
+            <p></p>
+            <label htmlFor="input-start-work-hour" className={classes.label}>Start Work Hour: </label>
+            <input className={classes.input} id="input-start-work-hour" type={'number'} min={0} max={23}
+                   onChange={(e) => setStartWorkHour(Number(e.target.value))}
+                   value={startWorkHour}/>
+            <p></p>
+            <label htmlFor="input-end-work-hour" className={classes.label}>End Work Hour: </label>
+            <input className={classes.input} id="input-end-work-hour" type={'number'} min={1} max={24}
+                   onChange={(e) => setEndWorkHour(Number(e.target.value))}
+                   value={endWorkHour}/>
+            <p></p>
+            <label htmlFor="input-hours-per-day" className={classes.label}>Hours per Day: </label>
+            <input className={classes.input} id="input-hours-per-day" type={'number'} min={1} max={24}
+                   onChange={(e) => setHoursPerDay(Number(e.target.value))}
+                   value={hoursPerDay}/>
+            <p></p>
+            <label htmlFor="input-work-days" className={classes.label}>Work Days: </label>
+            <input className={classes.input} id="input-work-days" type={'number'} min={1} max={7}
+                   onChange={(e) => setWorkDays(Number(e.target.value))}
+                   value={workDays}/>
         </div>
     </div>)
 }

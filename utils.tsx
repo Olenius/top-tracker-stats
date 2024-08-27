@@ -9,14 +9,21 @@ export class utils {
         return `${hoursString}:${minutesString}`;
     }
 
-    static getPercentOfWeekBar(): number {
+    static getPercentOfWeekBar(workdays: number): number {
         const today = new Date();
         const day = today.getDay();
 
-        if (day > 5) {
+        if (day > workdays) {
             return 100;
         }
 
-        return day * 20;
+        return day * (100 / workdays);
+    }
+
+    static getPercentOfDayBar(startWorkHour: number, endWorkHour: number): number {
+        const date = new Date();
+        const workSecondsPerDay = (endWorkHour - startWorkHour) * 3600;
+
+        return ((date.getHours() - startWorkHour) * 3600 + date.getMinutes() * 60 + date.getSeconds()) / workSecondsPerDay * 100;
     }
 }
