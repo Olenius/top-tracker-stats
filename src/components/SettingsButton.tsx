@@ -5,12 +5,16 @@ const openOptions = () =>
     url: "./options.html"
   })
 
-export const OptionsLink = ({ onlyIcon = false }: { full?: boolean }) => (
+export const SettingsButton = ({
+  onlyIcon = false
+}: {
+  onlyIcon?: boolean
+}) => (
   <button
-    className="inline-flex gap-1 items-center cursor-pointer font-bold py-2 px-4 hover:bg-gray-200 rounded-full"
+    className={`inline-flex gap-1 items-center cursor-pointer font-bold p-2 hover:bg-gray-200 rounded-full ${!onlyIcon ? "px-4" : ""}`}
     onClick={openOptions}
     title="Settings">
     <Cog6ToothIcon className="size-4" />
-    {!onlyIcon ? "Settings" : null}
+    {!onlyIcon ? "Open Settings" : null}
   </button>
 )

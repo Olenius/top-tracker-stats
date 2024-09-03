@@ -1,10 +1,9 @@
-import { ArrowPathIcon } from "@heroicons/react/24/solid"
-
 import { useStorage } from "@plasmohq/storage/dist/hook"
 
 import { ProgressBar } from "~/components/ProgressBar"
 import { useTopTrackerData } from "~/data/useTopTrackerData"
 import { utils } from "~/utils"
+import { SettingsButton } from "~components/SettingsButton"
 
 export function StatsPage() {
   const [token] = useStorage<string>("token")
@@ -15,22 +14,30 @@ export function StatsPage() {
   const [hoursPerDay] = useStorage<number>("hours_per_day", 8)
   const [workDays] = useStorage<number>("work_days", 5)
 
-  const { data, refetch, isRefetching, isLoading, isError } = useTopTrackerData(
-    token,
-    project,
-    worker
-  )
+  const { data, isLoading, isError } = useTopTrackerData(token, project, worker)
 
-  if (!token || !project || !worker) {
-    return <div className="text-center">Please configure options</div>
+  if (!token || !project || !worker || true) {
+    return (
+      <div className="flex-1 flex flex-col gap-2 items-center justify-center text-center">
+        <p>
+          Please add your <code>token</code>, <code>project id</code> and{" "}
+          <code>worker id</code>
+        </p>
+        <SettingsButton />
+      </div>
+    )
   }
 
   if (isLoading) {
-    return <div className="text-center">Loading...</div>
+    return (
+      <div className="flex-1 flex items-center justify-center text-center">
+        Loading...
+      </div>
+    )
   }
 
   if (isError) {
-    return <div className="text-center">Error fetching data</div>
+    return <div className="flex-1 text-center">Error fetching data</div>
   }
 
   const { statistics, engagements, dayStats } = data
@@ -44,22 +51,14 @@ export function StatsPage() {
     100
 
   return (
-    <div>
-      <div className="relative flex justify-between">
-        <h2 className="text-lg font-bold">TopTracker Stats</h2>
-        <button
-          className={`cursor-pointer p-2 hover:bg-gray-200 rounded-full ${isRefetching ? "animate-spin" : ""}`}
-          onClick={() => refetch()}
-          title="Refresh">
-          <ArrowPathIcon className="size-4" />
-        </button>
-      </div>
-
+    <div className="flex-1">
       <div className="space-y-4 pb-4">
         <div>
           <h4 className="font-bold text-green-600 mb-1">Outstanding</h4>
-          <p className="m-0 blur-sm hover:blur-none text-lg">
-            ${statistics.outstanding_amount.toFixed(2)}
+          <p className="m-0 text-lg">
+            <span className="blur-sm hover:blur-none">
+              ${statistics.outstanding_amount.toFixed(2)}
+            </span>
           </p>
         </div>
 
