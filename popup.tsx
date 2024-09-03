@@ -86,11 +86,6 @@ function IndexPopup() {
       (engagements.workers[0].rate * hoursPerDay * workDays)) *
     100
 
-  console.log({
-    todayProgress,
-    weekProgress
-  })
-
   return (
     <div>
       <div className="relative flex justify-between">
@@ -107,7 +102,8 @@ function IndexPopup() {
         <div>
           <h4 className="font-bold text-green-600 mb-1">Outstanding</h4>
           <p className="m-0 blur-sm hover:blur-none text-lg">
-            ${statistics.outstanding_amount.toFixed(2)}
+            829.23
+            {/*${statistics.outstanding_amount.toFixed(2)}*/}
           </p>
         </div>
 
