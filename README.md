@@ -1,33 +1,50 @@
-This is a [Plasmo extension](https://docs.plasmo.com/) project bootstrapped with [`plasmo init`](https://www.npmjs.com/package/plasmo).
+# Top Tracker Stats
 
-## Getting Started
+A Chrome extension that provides quick access to your Toptal Tracker statistics without opening the web page.
+![Top Tracker Stats Extension](https://github.com/Olenius/top-tracker-stats/blob/main/assets/extension.png?raw=true)
 
-First, run the development server:
+## Features
 
-```bash
-pnpm dev
-# or
-npm run dev
-```
+- View your outstanding balance at a glance
+- Check daily and weekly stats effortlessly
+- Set custom working hours to stay on track
+- Data stored locally in your browser for privacy
 
-Open your browser and load the appropriate development build. For example, if you are developing for the chrome browser, using manifest v3, use: `build/chrome-mv3-dev`.
+## Why Use Top Tracker Stats?
 
-You can start editing the popup by modifying `popup.tsx`. It should auto-update as you make changes. To add an options page, simply add a `options.tsx` file to the root of the project, with a react component default exported. Likewise to add a content page, add a `content.ts` file to the root of the project, importing some module and do some logic, then reload the extension on your browser.
+This extension streamlines your workflow by eliminating the need to constantly check the Toptal Tracker website. With Top Tracker Stats, you can:
 
-For further guidance, [visit our Documentation](https://docs.plasmo.com/)
+- Monitor your progress throughout the day
+- Ensure you're meeting your weekly targets
+- Avoid falling behind schedule
+- Maintain better time management
 
-## Making production build
+## Installation
 
-Run the following:
+Top Tracker Stats is currently in development mode. To install:
 
-```bash
-pnpm build
-# or
-npm run build
-```
+1. Clone this repository
+2. Follow the installation instructions on the [Plasmo documentation](https://docs.plasmo.com/)
 
-This should create a production bundle for your extension, ready to be zipped and published to the stores.
+## Upcoming Release
 
-## Submit to the webstores
+We're working on releasing Top Tracker Stats to the Chrome Web Store. Stay tuned for updates!
 
-The easiest way to deploy your Plasmo extension is to use the built-in [bpp](https://bpp.browser.market) GitHub action. Prior to using this action however, make sure to build your extension and upload the first version to the store to establish the basic credentials. Then, simply follow [this setup instruction](https://docs.plasmo.com/framework/workflows/submit) and you should be on your way for automated submission!
+## Contribute
+
+Your input is valuable! If you have ideas for improvements or new features, please:
+
+1. Open an issue to discuss your proposal
+2. Submit a pull request with your changes
+
+We welcome all contributions that can enhance the functionality and user experience of Top Tracker Stats.
+
+## Privacy
+
+Your data matters. Top Tracker Stats stores all user information locally in your browser, ensuring your stats remain private and secure.
+
+## Feedback
+
+We're constantly striving to improve. If you encounter any issues or have suggestions, please don't hesitate to reach out or open an issue on this repository.
+
+Let's make time tracking and management easier together!
