@@ -16,7 +16,7 @@ export function StatsPage() {
 
   const { data, isLoading, isError } = useTopTrackerData(token, project, worker)
 
-  if (!token || !project || !worker || true) {
+  if (!token || !project || !worker) {
     return (
       <div className="flex-1 flex flex-col gap-2 items-center justify-center text-center">
         <p>
@@ -37,7 +37,11 @@ export function StatsPage() {
   }
 
   if (isError) {
-    return <div className="flex-1 text-center">Error fetching data</div>
+    return (
+      <div className="flex-1 flex items-center justify-center text-center">
+        Error fetching data
+      </div>
+    )
   }
 
   const { statistics, engagements, dayStats } = data
