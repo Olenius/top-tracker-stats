@@ -1,55 +1,12 @@
 import { ArrowPathIcon } from "@heroicons/react/24/solid"
-import { QueryClient, useQuery } from "@tanstack/react-query"
 
-import { Storage } from "@plasmohq/storage"
-import { useStorage } from "@plasmohq/storage/hook"
+import { useStorage } from "@plasmohq/storage/dist/hook"
 
-import { DataFetcher } from "~dataFetcher"
-import ErrorBoundary from "~ErrorBoundary"
-import { utils } from "~utils"
+import { ProgressBar } from "~/components/ProgressBar"
+import { useTopTrackerData } from "~/data/useTopTrackerData"
+import { utils } from "~/utils"
 
-import "./globals.css"
-
-import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client"
-
-import { createPlasmoPersister } from "~plasmoPersister"
-
-const storage = new Storage()
-const persister = createPlasmoPersister(storage)
-
-const useTopTrackerData = (token: string, project: string, worker: string) => {
-  return useQuery({
-    queryKey: ["topTrackerData", token, project, worker],
-    queryFn: async () => {
-      const statistics = await DataFetcher.fetchStatistics(token, project)
-      const engagements = await DataFetcher.fetchEngagements(token, project)
-      const dayStats = await DataFetcher.fetchDayStats(token, project, worker)
-      return { statistics, engagements, dayStats }
-    },
-    enabled: !!token && !!project && !!worker,
-    refetchInterval: 180000
-  })
-}
-
-function ProgressBar({ red, blue }: { red: number; blue: number }) {
-  return (
-    <div className="relative h-6 bg-[#b2bec3] rounded-xl overflow-hidden">
-      <div
-        className="absolute h-full bg-[#74b9ff] rounded-xl"
-        style={{
-          width: `${red}%`
-        }}></div>
-      <div
-        className="absolute h-full bg-[#0984e3] rounded-xl"
-        style={{ width: `${blue}%` }}></div>
-      <span className="w-full absolute left-0 right-0 top-0 bottom-0 text-white font-bold flex items-center justify-center">
-        {blue.toFixed(2)}%
-      </span>
-    </div>
-  )
-}
-
-function IndexPopup() {
+export function StatsPage() {
   const [token] = useStorage<string>("token")
   const [project] = useStorage<string>("project")
   const [worker] = useStorage<string>("worker")
@@ -137,23 +94,6 @@ function IndexPopup() {
           />
         </div>
       </div>
-    </div>
-  )
-}
-
-const queryClient = new QueryClient()
-
-export default function () {
-  return (
-    <div className="w-[350px] p-4">
-      <ErrorBoundary
-        fallback={<div>Something went wrong. Please try again later.</div>}>
-        <PersistQueryClientProvider
-          client={queryClient}
-          persistOptions={{ persister }}>
-          <IndexPopup />
-        </PersistQueryClientProvider>
-      </ErrorBoundary>
     </div>
   )
 }
