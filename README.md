@@ -1,6 +1,7 @@
 # Top Tracker Stats
 
 A Chrome extension that provides quick access to your Toptal Tracker statistics without opening the web page.
+
 ![Top Tracker Stats Extension](https://github.com/Olenius/top-tracker-stats/blob/main/assets/extension.png?raw=true)
 
 ## Features
