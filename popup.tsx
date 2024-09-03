@@ -102,8 +102,7 @@ function IndexPopup() {
         <div>
           <h4 className="font-bold text-green-600 mb-1">Outstanding</h4>
           <p className="m-0 blur-sm hover:blur-none text-lg">
-            829.23
-            {/*${statistics.outstanding_amount.toFixed(2)}*/}
+            ${statistics.outstanding_amount.toFixed(2)}
           </p>
         </div>
 
