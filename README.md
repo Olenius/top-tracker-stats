@@ -2,6 +2,8 @@
 
 A Chrome extension that provides quick access to your Toptal Tracker statistics without opening the web page.
 
+[![Buy Me A Coffee](https://img.shields.io/badge/Donate-Buy%20Me%20A%20Coffee-orange?style=flat&logo=buymeacoffee)](https://buymeacoffee.com/olenius)
+
 ![Top Tracker Stats Extension](https://github.com/Olenius/top-tracker-stats/blob/main/assets/extension.png?raw=true)
 
 ## Features
@@ -49,3 +51,5 @@ Your data matters. Top Tracker Stats stores all user information locally in your
 We're constantly striving to improve. If you encounter any issues or have suggestions, please don't hesitate to reach out or open an issue on this repository.
 
 Let's make time tracking and management easier together!
+
+[![Buy Me A Coffee](https://img.shields.io/badge/Donate-Buy%20Me%20A%20Coffee-orange?style=flat&logo=buymeacoffee)](https://buymeacoffee.com/olenius)
